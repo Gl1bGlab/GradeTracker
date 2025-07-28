@@ -36,10 +36,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assignment.cs" />
-    <Compile Include="AClass.cs" />
+    <Compile Include="Classes\Assignment.cs" />
+    <Compile Include="Classes\AClass.cs" />
+    <Compile Include="Constants\AssignmentTypeEnum.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Student.cs" />
+    <Compile Include="Classes\Student.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

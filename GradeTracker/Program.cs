@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GradeTracker.Constants;
 
 namespace GradeTracker
 {
@@ -14,6 +15,18 @@ namespace GradeTracker
         int assignmentNum = 0;
         
         
+
+        static public Tuple<int, string, bool> example()
+        {
+            return new Tuple<int, string, bool> ( 1, "ex", false );
+        }
+
+        static public void ble()
+        {
+            var sumname = example();
+            Console.WriteLine( sumname.Item1 );
+        }
+
         static public Student AddStudent()
         {
             Console.WriteLine();
@@ -42,19 +55,24 @@ namespace GradeTracker
         static public void AddAssignment()
         {
             Console.WriteLine();
-            Console.Write("Input new assignment name: ");
-            Assignment assignment = new Assignment(Console.ReadLine());
+            Console.WriteLine("Input new assignment name: ");
+            string assName = Console.ReadLine();
+            Console.WriteLine("Input new assignment type: ");
+            //TODO: List enums, fix mess, add fix for different cases
+            Assignment assignment = new Assignment(assName, (AssignmentTypeEnum)Convert.ToInt16(Console.ReadLine()));
         }
 
         static public void Add()
         {
             List<Student> students = new List<Student>();
-            List<AClass> classes = new List<AClass>();
+            List<AClass> aClasses = new List<AClass>();
             string input;
+            
 
             Console.WriteLine("Write \"stu\" to add a new student");
             Console.WriteLine("Write \"subj\" to add a new subject");
             Console.WriteLine("Write \"as\" to add a new assignment");
+            //TODO: add back
             input = Console.ReadLine().ToLower();
 
             switch (input)
@@ -63,12 +81,19 @@ namespace GradeTracker
                     Student student = AddStudent();
                     students.Add(student);
                     Console.WriteLine($"Student {student}");
+                    if (aClasses.Any())
+                    {
+                        Console.WriteLine("Write a class name to add new student to it");
+                        string className = Console.ReadLine().ToLower();
+                        AClass selectedClass = aClasses.First(c => c.Name == className);
+                        student.AddClass(selectedClass);
+                    }
 
                     Add();
                     break;
                 case "subj":
                     AClass aclass = AddAClass();
-                    classes.Add(aclass);
+                    aClasses.Add(aclass);
 
                     Add(); 
                     break;
@@ -82,7 +107,7 @@ namespace GradeTracker
                     }
                     Console.WriteLine();
 
-                    foreach (AClass i in  classes)
+                    foreach (AClass i in  aClasses)
                     {
                         Console.WriteLine(i);
                     }

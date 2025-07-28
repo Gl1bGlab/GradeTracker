@@ -16,6 +16,10 @@ namespace GradeTracker
             this.Name = name.ToLower();
             this.Age = age;
         }
+        public void AddClass(AClass aclass)
+        {
+            Classes.Add(aclass);
+        }
         public override string ToString()
         {
             return this.Name + ", age " + this.Age + " years";

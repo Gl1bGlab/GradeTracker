@@ -8,8 +8,9 @@ namespace GradeTracker
 {
     public class AClass
     {
-        private string Name {  get; set; }
+        public string Name {  get; set; }
         public List<Assignment> Assignments { get; set; }
+        public List<Student> Students { get; set; }
         public AClass(string name) 
         {
             if (name != null)
