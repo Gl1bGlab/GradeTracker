@@ -1,0 +1,16 @@
+﻿
+
+System.Collections.Generic
+I tried to implement some kind of generic methods using System.Collections.Generic so I didn't have so much repeated code, but I couldn't figure it out.
+I kept running into issues when trying to convert the generic type to something specific, so I scrapped the idea for now.
+I'm pretty sure I was using it incorrectly, so if you if there's a way to make a generic method for stuff like removing specific items I'd be interested in that.
+
+JSON
+I only just added the ability to save and load stuff after a couple days of trying to figure out a bug.
+I tried isolating the issue in visual studio code and it gave me a much more accurate error message.
+Turned out I just needed empty constructors in my classes, but I still don't understand why exactly it needed that so I'm pretty curious about that.
+
+
+I've been pretty all over the place with what I've been working on, so if you see anything that's missing something obvious/important lmk.
+And if you've got any advice for how I could be doing stuff better generally like arranging my methods better or something like that, I'm eager to hear your thoughts.
+There's also probably a good amound of pointless stuff that could easily be removed from my constant changes, so if there's anything obvious like that lmk.

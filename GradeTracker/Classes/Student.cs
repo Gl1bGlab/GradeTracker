@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace GradeTracker
 {
     public class Student
     {
-        private string Name { get; set; }
-        private int Age { get; set; }
-        private List<AClass> Classes { get; set; }
-        public Student(string name,  int age)
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public List<AClass> Classes { get; set; }
+        public Student(string name, int age)
         {
-            this.Name = name.ToLower();
-            this.Age = age;
+            Name = name;
+            Age = age;
+            Classes = new List<AClass>();
         }
-        public void AddClass(AClass aclass)
+        public Student(string name, int age, List<AClass> classes) => (Classes, Name, Age) = (classes, name, age);
+        public Student() { }
+        public void AddAClass(AClass aclass)
         {
             Classes.Add(aclass);
         }
