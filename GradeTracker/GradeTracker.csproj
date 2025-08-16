@@ -45,10 +45,13 @@
     <Compile Include="Methods\MenuOptions\Add.cs" />
     <Compile Include="Methods\Menu.cs" />
     <Compile Include="Methods\MenuOptions\DeleteData.cs" />
-    <Compile Include="Methods\MenuOptions\Edit.cs" />
-    <Compile Include="Methods\MenuOptions\View.cs" />
+    <Compile Include="Methods\MenuOptions\EditMenu.cs" />
+    <Compile Include="Methods\MenuOptions\EditStudent\Age.cs" />
+    <Compile Include="Methods\MenuOptions\EditStudent\Grades.cs" />
+    <Compile Include="Methods\MenuOptions\EditStudent\Subject.cs" />
+    <Compile Include="Methods\MenuOptions\EditStudent\Name.cs" />
     <Compile Include="Methods\MenuOptions\Remove.cs" />
-    <Compile Include="Methods\RemoveCheck.cs" />
+    <Compile Include="Methods\Checks.cs" />
     <Compile Include="Methods\Find.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Classes\Student.cs" />
@@ -91,7 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NOTESFORPHIL.txt" />
+    <Content Include="NOTES_FOR_PHIL.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

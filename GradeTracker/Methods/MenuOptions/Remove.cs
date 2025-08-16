@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GradeTracker.Classes;
+
 
 namespace GradeTracker.Methods.MenuOptions
 {
-    internal class Remove
+    internal static class Remove
     {
+        //i've got a feeling removing singular objects is gonna be kinda weird
         static public List<Student> Student(List<Student> students, Student student)
         {
             //TODO

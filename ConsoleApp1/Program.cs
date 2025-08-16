@@ -12,4 +12,15 @@ namespace ConsoleApp1
         {
         }
     }
+    internal class Notes
+    {
+        /* .NET projects use a .json folder for settings
+         *
+         *
+         *
+         *
+         *
+        */
+        
+    }
 }

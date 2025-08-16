@@ -8,71 +8,38 @@ using System.Threading.Tasks;
 
 namespace GradeTracker.Methods.MenuOptions
 {
-    internal class DeleteData
+    internal static class DeleteData
     {
 //TODO: get rid of potential left over data
-        static public List<Student> Student(List<Student> students)
+        //i've been so all over the place, i put this todo here like a week ago
+        static public List<T> DeleteList<T>(List<T> list, string path, string type)
         {
+            Console.WriteLine($"Are you sure you want to delete all {type} data? Y/N");
             bool conformation = false;
-            while (conformation == false)
+            while (!conformation)
             {
-                Console.WriteLine("Are you sure you want to delete all student data? Y/N");
-                string answer = Console.ReadLine();
-                if (answer == "y")
+                string check = Console.ReadLine().ToLower();
+                if (check == "y")
                 {
-                    string path = Paths.student;
-                    File.Delete(path);
-                    students = new List<Student>();
+                    DeletePath(path, type);
+                    list = new List<T>();
                     conformation = true;
-                } 
-                else if (answer == "n")
+                }
+                else if (check == "n")
                 {
                     conformation = true;
                 }
             }
-            return students;
+            return list;
         }
-        static public List<AClass> AClass(List<AClass> aClasses)
+        static public void DeletePath(string path, string type)
         {
-            bool conformation = false;
-            while (conformation == false)
+            File.Delete(path);
+            if (path == Paths.aClass)
             {
-                Console.WriteLine("Are you sure you want to delete all subject and assignment data? Y/N");
-                string answer = Console.ReadLine();
-                if (answer == "y")
-                {
-                    string path = Paths.aClass;
-                    File.Delete(path);
-                    aClasses = new List<AClass>();
-                    conformation = true;
-                }
-                else if (answer == "n")
-                {
-                    conformation = true;
-                }
+                File.Delete(Paths.assignment);
             }
-            return aClasses;
-        }
-        static public List<Assignment> Assignment(List<Assignment> assignments)
-        {
-            bool conformation = false;
-            while (conformation == false)
-            {
-                Console.WriteLine("Are you sure you want to delete all student data? Y/N");
-                string answer = Console.ReadLine();
-                if (answer == "y")
-                {
-                    string path = Paths.assignment;
-                    File.Delete(path);
-                    assignments = new List<Assignment>();
-                    conformation = true;
-                }
-                else if (answer == "n")
-                {
-                    conformation = true;
-                }
-            }
-            return assignments;
+            Console.WriteLine($"All {type} data has been deleted");
         }
     }
 }
