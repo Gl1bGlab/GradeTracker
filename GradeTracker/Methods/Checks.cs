@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GradeTracker.Constants;
+using GradeTracker.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GradeTracker.Methods
 {
-    internal class RemoveCheck
+    internal static class Checks
     {
         static public List<Student> Student(List<Student> students)
         {
@@ -16,7 +18,7 @@ namespace GradeTracker.Methods
             }
             else
             {
-                Student studentToRemove = Find.Student(students);
+                Student studentToRemove = Find.StudentInputID(students);
                 bool validConforamtion = false;
 
                 while (!validConforamtion)
@@ -35,6 +37,18 @@ namespace GradeTracker.Methods
                 }
             }
             return students;
+        }
+        static public bool IfAny<T>(List<T> list, string type)
+        {
+            bool any;
+            if (!list.Any())
+            {
+                any = false;
+                Console.WriteLine($"No {type} found");
+            } 
+            else
+                any = true;
+            return any;
         }
     }
 }

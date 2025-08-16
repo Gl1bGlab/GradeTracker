@@ -12,30 +12,14 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
 using System.Text.Json.Serialization.Metadata;
+using GradeTracker.Classes;
 
 namespace GradeTracker
 {
     internal class Program
     {
-        static void Save(List<Student> students, List<AClass> aClasses, List<Assignment> assignments)
-        {
-            if (students.Any())
-            {
-                string cerialStudents = JsonSerializer.Serialize(students);
-                File.WriteAllText(Paths.student , cerialStudents);
-            }
-            if (aClasses.Any())
-            {
-                string cerialAClasses = JsonSerializer.Serialize(aClasses);
-                File.WriteAllText(Paths.aClass, cerialAClasses);
-            }
-            if(assignments.Any())
-            {
-                string cerialAssignments = JsonSerializer.Serialize(assignments);
-                File.WriteAllText(Paths.assignment, cerialAssignments);
-            }
-        }
-        
+        //at the start i just shoved all my methods in this class
+        //i felt super smart when i thought of making more classes just for methods lol
         static void Main(string[] args)
         {
             List<Student> students = new List<Student>();
@@ -47,8 +31,6 @@ namespace GradeTracker
             assignments = Load.Assignments(assignments);
 
             Menu.Start(students, aClasses, assignments);
-
-            Save(students, aClasses, assignments);
         }
     }
 }

@@ -1,0 +1,15 @@
+﻿I tried to find a way to cut all the repeated methods, but I couldn't find a way using generic types. I'm guessing there might be a way to do it with
+inheritance, like having a template class the others use that contains stuff like Name and ID feilds then use one generic method, but I haven't figured it out yet.
+
+I designed a lot of the earlier methods in a way where they're not very reuseable because I wasn't thinking ahead much, so if they seem really messy that's probably why.
+
+I also just kinda winged it with how I organized stuff, so if there's some kinda standardized way to put groups of methods and stuff together lmk.
+
+
+Other than that, if you've got any observations of things I could be doing way better I'd love to hear them. I'm still flying pretty blind with this stuff (as you'll definitely see
+from the code itself), so I'm eagar to hear your thoughts.
+
+Also, don't worry if you don't have much time to check over stuff. I'm not in any kinda rush with this specific project, as I've got an old book on c# that I've yet to go through and
+I recently got this really cool game called 'Turing Complete' about making a computer from scratch. I'm sure I can find pleanty of stuff to work on while you're busy with work.
+
+Thanks again for the support on helping me learn c#, I really appreciate it.

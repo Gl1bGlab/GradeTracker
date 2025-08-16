@@ -5,11 +5,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using GradeTracker.Methods.MenuOptions;
+using GradeTracker.Methods.MenuOptions.EditStudent;
+using GradeTracker.Classes;
 
 namespace GradeTracker.Methods
 {
-    internal class Menu
+    internal static class Menu
     {
+        //the add menu was one of the first things i worked on, so it's a damn mess
+        //usually works tho, so I can't complain
         static public void Start(List<Student> students, List<AClass> aClasses, List<Assignment> assignments)
         {
             Console.WriteLine();
@@ -40,6 +46,7 @@ namespace GradeTracker.Methods
                     DeleteData(students, aClasses, assignments);
                     break;
                 case "end":
+                    Save(students, aClasses, assignments);
                     break;
                 default:
                     Start(students, aClasses, assignments);
@@ -52,69 +59,72 @@ namespace GradeTracker.Methods
             {
                 case "stu":
                     Student student = MenuOptions.Add.Student();
-                    students.Add(student);
-                    Console.WriteLine($"Student {student}");
-                    Console.WriteLine();
+                    student.SetID(students);
+                    Console.WriteLine($"Assigned ID: {student.ID}\n");
                     if (aClasses.Any())
                     {
-                        Console.WriteLine($"Write \"add\" to add {student.Name} to a subject now");
-                        if (Console.ReadLine() == "add")
+                        string input;
+                        do
                         {
-                            AClass selectedAClass = Find.AClass(aClasses);
-                            student.AddAClass(selectedAClass);
-                            selectedAClass.AddStudent(student);
-                        }
+                            Console.WriteLine($"Type \"add\" to assign {student.Name} to any subjects now");
+                            Console.WriteLine($"Type \"later\" to assign subjects later");
+                            input = Console.ReadLine();
+                            Console.WriteLine();
+                            if (input == "add")
+                            {
+                                (aClasses, student) = MenuOptions.Add.AClassesToStudent(aClasses, student, false);
+                                break;
+                            }
+                        } while (input != "add" && input != "later");
                     }
-
+                    students.Add(student);
                     Add(students, aClasses, assignments);
                     break;
-
                 case "subj":
                     AClass aClass = MenuOptions.Add.AClass();
-                    aClasses.Add(aClass);
-
+                    aClass.SetID(aClasses);
+                    Console.WriteLine($"Assigned ID: {aClass.ID}\n");
                     if (students.Any())
                     {
-                        Console.WriteLine("Write \"add\" to add students now");
-                        Console.WriteLine("Write anything else to add students later");
-                        if (Console.ReadLine().ToLower() == "add")
+                        string input;
+                        do
                         {
-                            Student selectedStudent = Find.Student(students);
-                            aClass.AddStudent(selectedStudent);
-                            selectedStudent.AddAClass(aClass);
-                        }
+                            Console.WriteLine("Type \"add\" to add students now");
+                            Console.WriteLine("Type \"later\" to add students later");
+                            input = Console.ReadLine();
+                            Console.WriteLine();
+                            if (input == "add")
+                            {
+                                (students, aClass) = MenuOptions.Add.StudentsToAClass(students, aClass, false);
+                                break;
+                            }
+                        } while (input != "add" && input != "later");
                     }
-
+                    aClasses.Add(aClass);
                     Add(students, aClasses, assignments);
                     break;
-
                 case "as":
                     if (!aClasses.Any())
                     {
                         Console.WriteLine("Assignments cannont be created without any existing subjects");
+                        break;
                     }
-                    else
-                    {
-                        Assignment assignment = MenuOptions.Add.Assignment(aClasses);
-                        assignments.Add(assignment);
+                    Assignment assignment = MenuOptions.Add.Assignment(aClasses);
+                    assignment.SetID(assignments);
+                    Console.WriteLine($"Assigned ID: {assignment.ID}\n");
+                    assignments.Add(assignment);
 
-                        AClass selectedClass = Find.AClass(aClasses);
+                    AClass selectedClass = Find.AClassByID(aClasses, assignment.AClassID);
+                    selectedClass.AddAssignment(assignment);
 
-                        selectedClass.AddAssignment(assignment);
-                        assignment.AssignToAClass(selectedClass.Name);
-                    }
-
+                    MenuOptions.Add.AssignmentToStudents(students, assignment);
                     Add(students, aClasses, assignments);
                     break;
-
                 case "back":
                     Console.WriteLine();
                     Start(students, aClasses, assignments);
                     break;
-
                 default:
-                    //TODO: remove later
-
                     Add(students, aClasses, assignments);
                     break;
             }
@@ -126,7 +136,10 @@ namespace GradeTracker.Methods
             switch (Template("remove", false))
             {
                 case "stu":
-                    students = RemoveCheck.Student(students);
+                    if (Checks.IfAny(students, "student"))
+                    {
+                        students = Checks.Student(students);
+                    }
                     Remove(students, aClasses, assignments);
                     break;
                 case "subj":
@@ -152,7 +165,15 @@ namespace GradeTracker.Methods
             switch (Template("edit", false))
             {
                 case "stu":
-
+                    if (Checks.IfAny(students, "students"))
+                    {
+                        Student selectedStudent = Find.StudentInputID(students);
+                        EditMenu.Student(students, aClasses, assignments, selectedStudent);
+                    } 
+                    else
+                    {
+                        Edit(students, aClasses, assignments);
+                    }
                     break;
                 case "subj":
 
@@ -171,19 +192,32 @@ namespace GradeTracker.Methods
         }
         static public void View(List<Student> students, List<AClass> aClasses, List<Assignment> assignments)
         {
-            //TODO
             switch (Template("view", false))
             {
                 case "stu":
-                    Student student = Find.Student(students);
-                    MenuOptions.View.Student(student);
+                    if (Checks.IfAny(students, "students"))
+                    {
+                        Student student = Find.StudentInputID(students);
+                        student.WriteInfo();
+                    }
                     View(students, aClasses, assignments);
                     break;
                 case "subj":
-
+                    if (Checks.IfAny(aClasses, "subjects"))
+                    {
+                        AClass aClass = Find.AClassInputID(aClasses);
+                        aClass.WriteInfo();
+                    }
+                    View(students, aClasses, assignments);
                     break;
                 case "as":
-
+                    if (Checks.IfAny(assignments, "assignments"))
+                    {
+                        Assignment assignment = Find.AssignmentInputID(assignments);
+                        assignment.CalculateAverageGrade(students);
+                        assignment.WriteInfo(true);
+                    }
+                    View(students, aClasses, assignments);
                     break;
                 case "back":
                     Console.WriteLine();
@@ -199,15 +233,28 @@ namespace GradeTracker.Methods
             switch (Template("delete", true))
             {
                 case "stu":
-                    students = MenuOptions.DeleteData.Student(students);
+                    if (Checks.IfAny(students, "students"))
+                    {
+                        students = MenuOptions.DeleteData.DeleteList(students, Paths.student, "students");
+                    }
                     DeleteData(students, aClasses, assignments);
                     break;
                 case "subj":
-                    aClasses = MenuOptions.DeleteData.AClass(aClasses);
+                    if (Checks.IfAny(aClasses, "subjects"))
+                    {
+                        aClasses = MenuOptions.DeleteData.DeleteList(aClasses, Paths.aClass, "subjects and assignments");
+                        if (!aClasses.Any())
+                        {
+                            assignments = new List<Assignment>();
+                        }
+                    }
                     DeleteData(students, aClasses, assignments);
                     break;
                 case "as":
-                    assignments = MenuOptions.DeleteData.Assignment(assignments);
+                    if (Checks.IfAny(assignments, "assignments"))
+                    {
+                        assignments = MenuOptions.DeleteData.DeleteList(assignments, Paths.assignment, "assignments");
+                    }
                     DeleteData(students, aClasses, assignments);
                     break;
                 case "back":
@@ -219,25 +266,42 @@ namespace GradeTracker.Methods
                     break;
             }
         }
+        static void Save(List<Student> students, List<AClass> aClasses, List<Assignment> assignments)
+        {
+            if (students.Any())
+            {
+                string cerialStudents = JsonSerializer.Serialize(students);
+                File.WriteAllText(Paths.student, cerialStudents);
+            }
+            if (aClasses.Any())
+            {
+                string cerialAClasses = JsonSerializer.Serialize(aClasses);
+                File.WriteAllText(Paths.aClass, cerialAClasses);
+            }
+            if (assignments.Any())
+            {
+                string cerialAssignments = JsonSerializer.Serialize(assignments);
+                File.WriteAllText(Paths.assignment, cerialAssignments);
+            }
+        }
         static string Template(string menuType, bool delete)
         {
             
             if (delete)
             {
                 Console.WriteLine();
-                Console.WriteLine($"Write \"stu\" to {menuType} all student data");
-                Console.WriteLine($"Write \"subj\" to {menuType} all subject and assignment data");
-                Console.WriteLine($"Write \"as\" to {menuType} all assignment data");
+                Console.WriteLine($"Type \"stu\" to {menuType} all student data");
+                Console.WriteLine($"Type \"subj\" to {menuType} all subject and assignment data");
+                Console.WriteLine($"Type \"as\" to {menuType} all assignment data");
             } 
             else
             {
                 Console.WriteLine();
-                Console.WriteLine($"Write \"stu\" to {menuType} a student");
-                Console.WriteLine($"Write \"subj\" to {menuType} a subject");
-                Console.WriteLine($"Write \"as\" to {menuType} an assignment");
+                Console.WriteLine($"Type \"stu\" to {menuType} a student");
+                Console.WriteLine($"Type \"subj\" to {menuType} a subject");
+                Console.WriteLine($"Type \"as\" to {menuType} an assignment");
             }
-            Console.WriteLine($"Write \"back\" to go back to the start menu");
-
+            Console.WriteLine($"Type \"back\" to go back to the start menu");
 
             string input = Console.ReadLine().ToLower();
             return input;
