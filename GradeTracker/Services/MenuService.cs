@@ -1,6 +1,6 @@
 using System;
 using GradeTracker.Constants;
-
+using GradeTracker.Models;
 
 namespace GradeTracker.Services
 {
@@ -8,35 +8,19 @@ namespace GradeTracker.Services
     {
         private readonly Stack<MenuTypeEnum> _menuHistory = new();
 
-        public string GetInput() 
+        public MenuTypeEnum GetCurrentMenu() 
         {
-            return Console.ReadLine();
-        }
-
-        public void HandleMenu()
-        {
-            if (_menuHistory.Count == 0)
+            if (_menuHistory.Count > 0)
             {
-                HandleStartMenu();
+                return _menuHistory.Peek();
             }
-            else
+            else 
             {
-                switch (_menuHistory.Peek())
-                {
-                    case MenuTypeEnum.StartMenu:
-                        HandleStartMenu();
-                        break;
-                    case MenuTypeEnum.CourseMenu:
-                        HandleCourseMenu();
-                        break;
-                    default:
-                        Console.WriteLine("nope");
-                        break;
-                }
+                return MenuTypeEnum.StartMenu;
             }
         }
 
-        private void HandleStartMenu()
+        public void HandleStartMenu()
         {
             var menuText = 
             """
@@ -69,8 +53,6 @@ namespace GradeTracker.Services
                         break;
 
                 }
-
-                HandleMenu();
             }
             else 
             {
@@ -79,7 +61,7 @@ namespace GradeTracker.Services
             }
         }
 
-        private void HandleCourseMenu() 
+        public void HandleCourseMenu() 
         {
             var menuText = 
             """
@@ -87,13 +69,14 @@ namespace GradeTracker.Services
             (Enter the number of the Selection)
             1 - List Courses
             2 - Add a Course
-            3 - Remove a Course
-            4 - Go Back
+            3 - Edit a Course
+            4 - Remove a Course
+            5 - Go Back
             """;
 
             Console.WriteLine(menuText);
 
-            string[] validOptions = new string[4] { "1", "2", "3", "4" };
+            string[] validOptions = new string[5] { "1", "2", "3", "4", "5" };
             var input = GetInput();
             
             if (validOptions.Contains(input))
@@ -107,22 +90,50 @@ namespace GradeTracker.Services
                         _menuHistory.Push(MenuTypeEnum.AddCourseMenu);
                         break;
                     case "3":
-                        _menuHistory.Push(MenuTypeEnum.RemoveCourseMenu);
+                        _menuHistory.Push(MenuTypeEnum.EditCourseMenu);
                         break;
                     case "4":
+                        _menuHistory.Push(MenuTypeEnum.RemoveCourseMenu);
+                        break;
+                    case "5":
                         _menuHistory.Pop();
                         break;
                     default:
                         break;
                 }
-                
-                HandleMenu();
             }
             else 
             {
                 Console.WriteLine("Invalid selection, please try again.");
                 HandleCourseMenu();
             }
+        }
+
+        public void HandleListCourseMenu(List<Course> courses)
+        {
+            foreach(var course in courses)
+            {
+                Console.WriteLine($"{course.Id} - {course.Title}");
+            }
+
+            _menuHistory.Pop();
+        }
+
+        public void HandleAddCourseMenu(List<Course> courses)
+        {
+            Course newCourse = new Course();
+            newCourse.Id = courses.Count() + 1; 
+
+            Console.WriteLine("Enter the name of the course:");
+            newCourse.Title = Console.ReadLine();
+
+            courses.Add(newCourse);
+            _menuHistory.Pop();
+        }
+
+        private string GetInput() 
+        {
+            return Console.ReadLine();
         }
     }
 }

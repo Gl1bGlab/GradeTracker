@@ -7,6 +7,7 @@ namespace GradeTracker.Constants
         StudentMenu,
         ListCourseMenu,
         AddCourseMenu,
+        EditCourseMenu,
         RemoveCourseMenu
     }
 }
