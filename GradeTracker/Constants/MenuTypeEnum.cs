@@ -2,6 +2,11 @@ namespace GradeTracker.Constants
 {
     public enum MenuTypeEnum 
     {
-        StartMenu
+        StartMenu,
+        CourseMenu,
+        StudentMenu,
+        ListCourseMenu,
+        AddCourseMenu,
+        RemoveCourseMenu
     }
 }
